@@ -218,7 +218,7 @@ def main():
     # and padding to a square means every sticker occupies the same box, and
     # one width in CSS sizes all of them identically.
     STICKER_BOX = 240
-    STICKER_ART = 208  # longest side, leaving a little air inside the square
+    STICKER_ART = 226  # longest side, leaving a little air inside the square
     for name, idx in {**{f'sticker-{k}': v for k, v in STICKERS_IT.items()},
                       **{f'sticker-{k}': v for k, v in STICKERS_UK.items()}}.items():
         im = raw(idx)

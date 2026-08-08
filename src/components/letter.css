@@ -7,6 +7,7 @@
   flex-direction: column;
   background: var(--pink);
   overflow-y: auto;
+  overflow-x: hidden;
   overscroll-behavior: contain;
   padding: max(10px, env(safe-area-inset-top)) 14px calc(18px + env(safe-area-inset-bottom));
 }
@@ -113,9 +114,9 @@
 /* ---------------------------------------------------------- the sticker */
 .note__sticker {
   position: absolute;
-  right: -10px;
-  bottom: -20px;
-  width: 76px;
+  right: -2px;
+  bottom: -24px;
+  width: 94px;
   height: auto;
   pointer-events: none;
   filter: drop-shadow(0 6px 8px rgba(41, 76, 104, 0.2));
@@ -245,9 +246,9 @@
     padding: 40px 40px 104px;
   }
   .note__sticker {
-    right: -14px;
-    bottom: -24px;
-    width: 88px;
+    right: -18px;
+    bottom: -28px;
+    width: 108px;
   }
 }
 

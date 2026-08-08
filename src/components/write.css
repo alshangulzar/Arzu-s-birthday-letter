@@ -80,9 +80,9 @@
 .preview__sticker {
   position: absolute;
   z-index: 6;
-  right: -5%;
-  bottom: -10%;
-  width: 24%;
+  right: -6%;
+  bottom: -12%;
+  width: 30%;
   height: auto;
   transform: rotate(-11deg);
   pointer-events: none;
@@ -324,7 +324,7 @@
 
 .stickers__grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(54px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(64px, 1fr));
   gap: 6px;
 }
 
@@ -333,7 +333,7 @@
   place-items: center;
   width: 100%;
   aspect-ratio: 1;
-  padding: 6px;
+  padding: 4px;
   border-radius: 12px;
   border: 2px solid transparent;
   background: transparent;
