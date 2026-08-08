@@ -1,8 +1,19 @@
 import { createClient } from '@supabase/supabase-js'
 import seed from '../data/letters.json'
 
-const URL = import.meta.env.VITE_SUPABASE_URL
-const KEY = import.meta.env.VITE_SUPABASE_ANON_KEY
+const env = import.meta.env
+
+// Accept every name these keys realistically arrive under: set by hand as
+// VITE_*, or written automatically by the Supabase → Vercel integration.
+const URL =
+  env.VITE_SUPABASE_URL || env.NEXT_PUBLIC_SUPABASE_URL || env.SUPABASE_URL || ''
+const KEY =
+  env.VITE_SUPABASE_ANON_KEY ||
+  env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
+  env.SUPABASE_ANON_KEY ||
+  env.VITE_SUPABASE_PUBLISHABLE_KEY ||
+  env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
+  ''
 
 export const isRemote = Boolean(URL && KEY)
 
