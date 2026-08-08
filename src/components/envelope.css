@@ -1,0 +1,455 @@
+/* ================================================================= la posta
+   The mailbox is a rail you flick through, like post spread on a table. */
+
+.mailbox__head {
+  text-align: center;
+  margin-bottom: 10px;
+  padding-top: 26px;
+}
+
+.mailbox__title {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 700;
+  font-size: clamp(2rem, 11vw, 3.25rem);
+  color: var(--azure);
+  line-height: 1;
+}
+
+.mailbox__sub {
+  font-family: var(--font-hand);
+  font-size: var(--hand-size);
+  color: var(--ink);
+  margin-top: 2px;
+}
+
+.mailbox__write {
+  display: flex;
+  justify-content: center;
+  margin-top: 26px;
+}
+
+/* ------------------------------------------------------------- the rail --
+   Post fanned out on a table. The slot each envelope occupies (--step) is
+   deliberately NARROWER than the envelope itself (--env-w), so neighbours
+   overlap and tuck behind the centred one. That's what keeps a whole envelope
+   on screen either side instead of slicing one down the middle at the edge. */
+.rail {
+  --env-w: min(46vw, 168px);
+  /* The slot is sized off the envelope, not picked by hand. At 0.63 the next
+     envelope along always clears the rail's half-width — so a neighbour is
+     whole at rest AND stays whole the entire way through a slide — while the
+     one after it stays fully off screen. */
+  --step: calc(var(--env-w) * 0.63);
+  --bleed: 14px;
+  --feather: 16px;
+}
+
+@media (min-width: 620px) {
+  .rail {
+    --bleed: 26px;
+  }
+}
+
+@media (min-width: 700px) {
+  .rail {
+    --env-w: min(34vw, 260px);
+    --step: min(30vw, 290px);
+    --feather: 44px;
+  }
+}
+
+.rail__scroller {
+  display: flex;
+  align-items: center;
+  overflow-x: auto;
+  overflow-y: visible;
+  scroll-snap-type: x mandatory;
+  /* the first and last envelope have to be able to reach the middle */
+  /* enough headroom for the tallest state — an open flap plus the hearts
+     bobbing above it — so nothing clips vertically as the centre scales up */
+  padding: 58px calc(50% - var(--step) / 2) 34px;
+  margin-inline: calc(var(--bleed) * -1);
+  scrollbar-width: none;
+  cursor: grab;
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+  /* A narrow feather only — just enough to soften the third envelope out as it
+     leaves. Any wider and it starts eating the neighbour, which is exactly the
+     sliced-off look this layout exists to avoid. */
+  -webkit-mask-image: linear-gradient(
+    90deg, transparent 0, #000 var(--feather), #000 calc(100% - var(--feather)), transparent 100%);
+  mask-image: linear-gradient(
+    90deg, transparent 0, #000 var(--feather), #000 calc(100% - var(--feather)), transparent 100%);
+}
+
+.rail__scroller::-webkit-scrollbar {
+  display: none;
+}
+
+.rail__scroller.is-grabbing {
+  cursor: grabbing;
+  scroll-snap-type: none;
+}
+
+.rail__item {
+  --p: 0;
+  --side: 1;
+  flex: 0 0 var(--step);
+  /* a flex item's min-width defaults to auto, which refuses to go below the
+     envelope's own width and silently cancels the basis — without this the
+     slots never overlap and the neighbours get sliced by the edge instead */
+  min-width: 0;
+  scroll-snap-align: center;
+  display: flex;
+  justify-content: center;
+  /* scale, lean and dim all read off --p, which the scroll handler writes
+     every frame — so it moves with the finger, not in steps */
+  transform: scale(calc(0.6 + 0.4 * var(--p)))
+    rotate(calc((var(--tilt) * 1deg) + (1 - var(--p)) * var(--side) * -3deg));
+  opacity: calc(0.5 + 0.5 * var(--p));
+  transition: opacity 120ms linear;
+  will-change: transform, opacity;
+}
+
+/* wider than its slot on purpose — this is the overlap */
+.rail__item > .env {
+  flex: 0 0 auto;
+  width: var(--env-w);
+}
+
+/* ---------------------------------------------------------- the envelope */
+.env {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.envart {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: var(--env-aspect);
+  perspective: 900px;
+  /* warm and wide — a shadow falling on paper, not on a grey desk */
+  filter: drop-shadow(0 14px 18px rgba(105, 123, 65, 0.16))
+    drop-shadow(0 4px 6px rgba(41, 76, 104, 0.12));
+  transition: filter 260ms ease;
+}
+
+.env:hover .envart,
+.env:focus-visible .envart {
+  filter: drop-shadow(0 30px 30px rgba(105, 123, 65, 0.14))
+    drop-shadow(0 8px 12px rgba(41, 76, 104, 0.1));
+}
+
+.envart__layer {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: auto;
+  user-select: none;
+}
+
+.envart__back {
+  z-index: 0;
+}
+
+.envart__front {
+  z-index: 3;
+}
+
+.envart__flap {
+  z-index: 4;
+  transform-origin: 50% 0%;
+  transform-style: preserve-3d;
+  backface-visibility: visible;
+}
+
+/* the sprig tucked into the corner of one she's read */
+.env__marker {
+  position: absolute;
+  z-index: 6;
+  right: 1%;
+  bottom: -14%;
+  width: 20%;
+  height: auto;
+  transform: rotate(14deg);
+  transform-origin: 50% 100%;
+}
+
+.env__padlockWrap {
+  position: absolute;
+  z-index: 6;
+  left: 50%;
+  top: 46%;
+  width: 13%;
+  translate: -50% -50%;
+  pointer-events: none;
+}
+
+.env__padlock {
+  width: 100%;
+  height: auto;
+}
+
+.env__hearts {
+  position: absolute;
+  z-index: 2;
+  left: 50%;
+  top: -20%;
+  display: flex;
+  align-items: flex-end;
+  gap: 7%;
+  width: 38%;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.env__hearts img {
+  width: 28%;
+  height: auto;
+}
+
+/* --------------------------------------------------------------- states */
+.env--sealed .envart {
+  filter: saturate(0.4) opacity(0.66) drop-shadow(0 10px 14px rgba(105, 123, 65, 0.12));
+}
+
+.env--sealed:hover .envart,
+.env--sealed:focus-visible .envart {
+  filter: saturate(0.5) opacity(0.75) drop-shadow(0 16px 18px rgba(105, 123, 65, 0.12));
+}
+
+.env--sealed {
+  cursor: not-allowed;
+}
+
+.env--ready .envart {
+  animation: env-float 3.6s ease-in-out infinite;
+}
+
+@keyframes env-float {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  50% {
+    translate: 0 -5px;
+  }
+}
+
+/* -------------------------------------------------------- the postmark --
+   Rings and type, sat crooked and a little ink-starved. */
+.env__postmark {
+  position: absolute;
+  z-index: 5;
+  right: 6%;
+  top: 12%;
+  width: 23%;
+  aspect-ratio: 1;
+  pointer-events: none;
+}
+
+.postmark {
+  display: grid;
+  place-items: center;
+  color: var(--ink);
+  opacity: 0.42;
+  mix-blend-mode: multiply;
+}
+
+.postmark > * {
+  grid-area: 1 / 1;
+}
+
+.postmark__ring {
+  width: 100%;
+  height: 100%;
+  border: 2.5px solid currentColor;
+  border-radius: 50%;
+  /* ink-starved: the ring breaks up where the stamp didn't quite take */
+  -webkit-mask-image: repeating-conic-gradient(#000 0deg 26deg, rgba(0, 0, 0, 0.25) 26deg 30deg);
+  mask-image: repeating-conic-gradient(#000 0deg 26deg, rgba(0, 0, 0, 0.25) 26deg 30deg);
+}
+
+.postmark__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 0.95;
+  font-family: var(--font-ui);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.postmark__day {
+  font-size: 26cqw;
+}
+
+.postmark__month {
+  font-size: 14cqw;
+}
+
+.postmark__year {
+  font-size: 10cqw;
+  opacity: 0.8;
+}
+
+.env__postmark,
+.picker__postmark,
+.preview__postmark {
+  container-type: inline-size;
+}
+
+.postmark__arc {
+  font-family: var(--font-ui);
+  font-weight: 700;
+  font-size: 8cqw;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  align-self: start;
+  margin-top: 8%;
+}
+
+.postmark__arc--bottom {
+  align-self: end;
+  margin: 0 0 8%;
+}
+
+.postmark--waiting {
+  opacity: 0.5;
+}
+
+/* ------------------------------------------------------------- caption */
+.rail__caption {
+  text-align: center;
+  min-height: 4rem; /* reserved, so the line never shifts as she flicks */
+  padding: 0 12px;
+}
+
+.rail__from {
+  font-family: var(--font-hand);
+  font-size: calc(var(--hand-size) + 2px);
+  line-height: 1.15;
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+
+.rail__status {
+  font-family: var(--font-ui);
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: var(--ink);
+  opacity: 0.72;
+  margin-top: 2px;
+}
+
+.rail__status.is-pulsing {
+  animation: status-pulse 420ms ease-in-out;
+}
+
+@keyframes status-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    color: var(--ink);
+  }
+  45% {
+    transform: scale(1.14);
+    color: var(--heart-red);
+  }
+}
+
+/* ---------------------------------------------------------------- dots */
+.rail__dots {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin-top: 14px;
+  padding: 0 12px;
+}
+
+.dot {
+  display: block;
+  width: 11px;
+  height: 11px;
+  padding: 0;
+  border-radius: 50%;
+  background: transparent;
+  border: 2px solid var(--ink);
+  opacity: 0.3;
+  transition: opacity 180ms ease, transform 180ms ease;
+}
+
+/* sealed reads as an outline waiting to be filled; ready and read are solid */
+.dot--ready {
+  background: var(--lemon);
+  border-color: var(--lemon-deep);
+  opacity: 0.65;
+}
+
+.dot--read {
+  background: var(--azure);
+  border-color: var(--blue-deep);
+  opacity: 0.45;
+}
+
+.dot.is-active {
+  opacity: 1;
+  transform: scale(1.34);
+}
+
+.dot:focus-visible {
+  outline-offset: 4px;
+}
+
+.rail__garden {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 22px;
+  margin-top: 18px;
+  opacity: 0.75;
+}
+
+/* ---------------------------------------------------------- empty table */
+.empty {
+  max-width: 24rem;
+  margin: 10vh auto 0;
+  text-align: center;
+}
+
+.empty img {
+  width: 140px;
+  margin: 0 auto 18px;
+  opacity: 0.8;
+}
+
+.empty p {
+  font-family: var(--font-hand);
+  font-size: var(--hand-size);
+  color: var(--ink);
+}
+
+.empty p + p {
+  margin-top: 10px;
+  color: var(--sage);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .env--ready .envart {
+    animation: none;
+  }
+  .rail__item {
+    transition: none;
+  }
+  .rail__status.is-pulsing {
+    animation: none;
+    color: var(--heart-red);
+  }
+}

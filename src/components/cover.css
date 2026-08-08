@@ -1,0 +1,95 @@
+.cover {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100dvh - 96px);
+  padding: 30px 4px 24px;
+  text-align: center;
+}
+
+.cover__art {
+  position: relative;
+  width: min(340px, 78vw);
+  /* matches the hero's 720x640 so nothing reflows while it loads */
+  aspect-ratio: 720 / 640;
+  margin-bottom: 6px;
+}
+
+.cover__hero {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 16px 20px rgba(74, 87, 48, 0.22));
+}
+
+.cover__sprig {
+  position: absolute;
+  z-index: 0;
+  bottom: 14%;
+}
+
+.cover__sprig--l {
+  left: -12%;
+}
+
+.cover__sprig--r {
+  right: -10%;
+}
+
+.cover__kicker {
+  font-family: var(--font-ui);
+  font-weight: 600;
+  font-size: 0.875rem;
+  letter-spacing: 0.16em;
+  text-transform: lowercase;
+  color: var(--deep-sage);
+}
+
+.cover__name {
+  font-size: clamp(2.75rem, 17vw, 5rem);
+  color: var(--deep-sage);
+  margin: 2px 0 8px;
+  overflow-wrap: anywhere;
+}
+
+.cover__line {
+  max-width: 20ch;
+  color: var(--ink);
+  margin-bottom: 22px;
+}
+
+.cover__cta {
+  font-family: var(--font-ui);
+  font-weight: 700;
+  font-size: 1.0625rem;
+  letter-spacing: 0.01em;
+  color: var(--cream);
+  background: var(--deep-sage);
+  border-radius: 999px;
+  padding: 14px 30px;
+  box-shadow: var(--shadow-rest);
+  transition: background 200ms ease, box-shadow 200ms ease;
+}
+
+.cover__cta:hover {
+  background: var(--ink);
+  box-shadow: var(--shadow-lift);
+}
+
+/* the little sprig garden along the bottom of the mailbox */
+.mailbox__garden {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 26px;
+  margin-top: 54px;
+  opacity: 0.75;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cover__cta {
+    transition: none;
+  }
+}

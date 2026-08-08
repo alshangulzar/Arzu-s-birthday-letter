@@ -1,0 +1,22 @@
+{
+  "name": "letters-for-you",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "build:single": "vite build && python3 tools/webp_dist.py && node tools/build_singlefile.mjs"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.112.1",
+    "framer-motion": "^13.0.0",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^6.0.5",
+    "vite": "^8.2.0"
+  }
+}

@@ -1,0 +1,259 @@
+/* ------------------------------------------------------- the reading view */
+.reader {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  background: var(--pink);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: max(10px, env(safe-area-inset-top)) 14px calc(18px + env(safe-area-inset-bottom));
+}
+
+.reader__bar {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  display: flex;
+  padding: 6px 0 10px;
+}
+
+/* A long letter scrolls under the back button, and the pill alone doesn't hide
+   it — handwriting kept showing through the gaps. This fades the page colour
+   out beneath the bar so the text disappears cleanly as it passes. */
+.reader__bar::before {
+  content: '';
+  position: absolute;
+  inset: -14px -14px -22px;
+  z-index: -1;
+  background: linear-gradient(var(--pink) 62%, transparent);
+  pointer-events: none;
+}
+
+.reader__back {
+  font-family: var(--font-ui);
+  font-weight: 600;
+  font-size: 0.9375rem;
+  color: var(--ink);
+  padding: 8px 14px 8px 10px;
+  border-radius: 999px;
+  background: rgba(244, 239, 224, 0.78);
+  transition: background 180ms ease;
+}
+
+.reader__back:hover {
+  background: var(--paper-white);
+}
+
+/* The envelope and the note share one grid cell, so the note grows out of
+   exactly where the envelope was standing. */
+.reader__stack {
+  display: grid;
+  place-items: center;
+  width: min(560px, 100%);
+  margin: auto;
+  padding: 8px 0 4px;
+}
+
+.reader__stack > * {
+  grid-area: 1 / 1;
+}
+
+.reader__env {
+  width: min(330px, 66vw);
+}
+
+/* the letter still inside the envelope, before it becomes the note */
+.reader__slip {
+  position: absolute;
+  z-index: 2;
+  left: 11%;
+  top: 48%;
+  width: 78%;
+  height: 50%;
+  display: block;
+}
+
+.reader__slip img {
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 4px 8px rgba(41, 76, 104, 0.25));
+}
+
+/* The wax heart, clipped down the middle so it BREAKS rather than vanishing.
+   The pack has one heart; each half shows a different side of it. */
+.reader__seal {
+  position: absolute;
+  z-index: 5;
+  left: 50%;
+  top: 44%;
+  width: 17%;
+  display: flex;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.reader__sealHalf {
+  display: block;
+  width: 50%;
+  overflow: hidden;
+}
+
+.reader__sealHalf img {
+  width: 200%;
+  max-width: none;
+  height: auto;
+}
+
+.reader__sealHalf--r img {
+  margin-left: -100%;
+}
+
+/* ---------------------------------------------------------- the sticker */
+.note__sticker {
+  position: absolute;
+  right: -10px;
+  bottom: -20px;
+  width: 76px;
+  height: auto;
+  pointer-events: none;
+  filter: drop-shadow(0 6px 8px rgba(41, 76, 104, 0.2));
+}
+
+.note__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.note__kicker {
+  font-size: 1.0625rem;
+}
+
+.note__postmark {
+  position: absolute;
+  left: 18px;
+  bottom: 14px;
+  width: 84px;
+  aspect-ratio: 1;
+  container-type: inline-size;
+  pointer-events: none;
+}
+
+/* -------------------------------------------------------------- the note */
+.note {
+  position: relative;
+  width: 100%;
+  padding: 30px 22px 96px;
+  border-radius: 4px;
+  background: var(--paper-white);
+  box-shadow: 0 22px 40px -26px rgba(41, 76, 104, 0.5), 0 2px 0 var(--lemon);
+  transform-origin: 50% 50%;
+}
+
+.note__date {
+  font-family: var(--font-ui);
+  font-weight: 600;
+  font-size: 0.75rem;
+  letter-spacing: 0.16em;
+  color: var(--ink);
+  text-align: right;
+}
+
+.note__from {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 700;
+  font-size: clamp(1.375rem, 6.5vw, 1.875rem);
+  line-height: 1.15;
+  color: var(--ink);
+  margin: 2px 0 14px;
+  overflow-wrap: anywhere;
+}
+
+/* cream ruled paper — the rule spacing and the line-height are the same
+   number on purpose, so the handwriting sits on the lines */
+.note__body {
+  font-family: var(--font-hand);
+  font-size: max(var(--hand-size), 24px);
+  line-height: 34px;
+  color: var(--ink);
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0 33px,
+    rgba(113, 164, 196, 0.42) 33px 34px
+  );
+  padding-top: 4px;
+}
+
+.note__body p + p {
+  margin-top: 34px;
+}
+
+.note__sign {
+  font-family: var(--font-hand);
+  font-size: calc(max(var(--hand-size), 24px) + 6px);
+  color: var(--ink);
+  text-align: right;
+  margin-top: 26px;
+  transform: rotate(-2.5deg);
+  transform-origin: 100% 50%;
+}
+
+.reader__foot {
+  display: flex;
+  justify-content: center;
+  padding: 30px 0 6px;
+}
+
+.reader__fold {
+  font-family: var(--font-ui);
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--paper);
+  background: var(--ink);
+  border-radius: 999px;
+  padding: 13px 28px;
+  box-shadow: var(--shadow-rest);
+  transition: background 180ms ease, box-shadow 180ms ease;
+}
+
+.reader__fold:hover {
+  background: var(--ink);
+  box-shadow: var(--shadow-lift);
+}
+
+/* ------------------------------------------------------------ heart burst */
+.burst {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.burst__heart {
+  position: absolute;
+  bottom: 0;
+  height: auto;
+}
+
+@media (min-width: 620px) {
+  .note {
+    padding: 40px 40px 104px;
+  }
+  .note__sticker {
+    right: -14px;
+    bottom: -24px;
+    width: 88px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reader__back,
+  .reader__fold {
+    transition: none;
+  }
+}
