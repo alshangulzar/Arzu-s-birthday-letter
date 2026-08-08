@@ -19,7 +19,7 @@ export default function WritePage({ onDone }) {
   const { t, formatLong } = useLang()
   const [from, setFrom] = useState('')
   const [message, setMessage] = useState('')
-  const [date, setDate] = useState(() => nextBirthday())
+  const [date, setDate] = useState(() => todayInput())
   const [envelope, setEnvelope] = useState('lemon')
   const [sticker, setSticker] = useState(null)
   const [touched, setTouched] = useState({})
@@ -58,13 +58,14 @@ export default function WritePage({ onDone }) {
   function writeAnother() {
     setFrom('')
     setMessage('')
-    setDate(nextBirthday())
+    setDate(todayInput())
     setSticker(null)
     setTouched({})
     setPhase('writing')
   }
 
   const dateShortcuts = [
+    [t.dateToday, todayInput()],
     [t.dateBirthday, nextBirthday()],
     [t.dateMonth, inAMonth()],
   ]
@@ -224,8 +225,12 @@ export default function WritePage({ onDone }) {
                 <input
                   type="date"
                   value={date}
-                  min={todayInput()}
+                  /* no min — a date in the past just means the letter is
+                     already open, which is often exactly what's wanted */
                   onChange={(e) => e.target.value && setDate(e.target.value)}
+                  /* clicking the chip focuses the field but doesn't open the
+                     calendar in Chrome; showPicker() is what actually does */
+                  onClick={(e) => e.currentTarget.showPicker?.()}
                 />
               </label>
             </div>

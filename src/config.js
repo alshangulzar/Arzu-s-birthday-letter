@@ -4,7 +4,7 @@ export const HER_NAME = 'Arzű'
 // Cover and UI copy live in src/i18n.jsx, one block per language.
 
 // Powers the "her birthday" shortcut on the write page. Month is 1-based.
-export const BIRTHDAY = { month: 8, day: 8 }
+export const BIRTHDAY = { month: 8, day: 9 }
 
 /** The next occurrence of her birthday, as "YYYY-MM-DD". */
 export function nextBirthday(now = new Date()) {
