@@ -116,20 +116,21 @@ export async function postLetter({ from, message, unlockDate, envelope, sticker 
     return row
   }
 
-  const { data, error } = await supabase
-    .from('letters')
-    .insert({
-      from_name: from,
-      message,
-      unlock_date: unlockDate,
-      envelope,
-      sticker: sticker || null,
-    })
-    .select('id')
-    .single()
+  // No .select() after the insert. Asking for the row back is a RETURNING
+  // clause, which needs SELECT on public.letters — and anon deliberately has
+  // none, because that table holds sealed letters. Reads only ever go through
+  // the letters_public view. Adding .select() here fails every insert with a
+  // permissions error, which is exactly what "it wouldn't go through" was.
+  const { error } = await supabase.from('letters').insert({
+    from_name: from,
+    message,
+    unlock_date: unlockDate,
+    envelope,
+    sticker: sticker || null,
+  })
 
   if (error) throw error
-  return { id: data.id, from, message, unlockDate, envelope, sticker }
+  return { from, message, unlockDate, envelope, sticker }
 }
 
 /** Letters sealed on this browser while running without Supabase. */
