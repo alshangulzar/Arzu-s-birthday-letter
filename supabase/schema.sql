@@ -18,7 +18,7 @@ create extension if not exists "pgcrypto";
 create table if not exists public.letters (
   id          uuid primary key default gen_random_uuid(),
   from_name   text        not null check (length(trim(from_name)) between 1 and 80),
-  message     text        not null check (length(trim(message))   between 1 and 800),
+  message     text        not null check (length(trim(message))   between 1 and 1500),
   unlock_date date        not null,
   envelope    text        not null check (envelope in (
                 'lemon','azure','open-lemon','sunshine','deep-blue','open-sky',
@@ -57,6 +57,11 @@ alter view public.letters_public set (security_invoker = off);
 grant select on public.letters_public to anon, authenticated;
 revoke all on public.letters from anon, authenticated;
 grant insert on public.letters to anon, authenticated;
+
+-- If you already ran an earlier version of this file, widen the limit with:
+--   alter table public.letters drop constraint letters_message_check;
+--   alter table public.letters add constraint letters_message_check
+--     check (length(trim(message)) between 1 and 1500);
 
 -- ------------------------------------------------------------------ notes
 -- · current_date is the database's date, in the database's timezone. If she and

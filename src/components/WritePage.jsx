@@ -11,8 +11,8 @@ import { inAMonth, todayInput } from '../lib/dates'
 import { nextBirthday } from '../config'
 import { postLetter } from '../lib/letters'
 
-const MAX = 800
-const COUNTER_FROM = 600
+const MAX = 1500
+const COUNTER_FROM = 1200
 
 export default function WritePage({ onDone }) {
   const reduced = useReducedMotion()
@@ -184,7 +184,7 @@ export default function WritePage({ onDone }) {
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               onBlur={() => setTouched((t) => ({ ...t, message: true }))}
-              rows={7}
+              rows={9}
               placeholder={t.fieldMessagePlaceholder}
             />
             <div className="field__row">
