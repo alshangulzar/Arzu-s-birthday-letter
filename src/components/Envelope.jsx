@@ -98,6 +98,18 @@ const Envelope = forwardRef(function Envelope(
 
       <Postmark date={letter.unlockDate} posted={!sealed} tilt={sealed ? -9 : -6} className="env__postmark" />
 
+      {/* whoever wrote it picked this — it belongs on the envelope in the rail
+          too, not only on the letter once it's open */}
+      {letter.sticker && (
+        <img
+          className="env__sticker"
+          src={art(`sticker-${letter.sticker}`)}
+          alt=""
+          aria-hidden="true"
+          {...size(`sticker-${letter.sticker}`)}
+        />
+      )}
+
       {sealed && (
         <span className="env__padlockWrap">
         <motion.img

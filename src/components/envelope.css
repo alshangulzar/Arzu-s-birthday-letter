@@ -169,6 +169,21 @@
   backface-visibility: visible;
 }
 
+/* the sticker whoever wrote it chose, sat on the envelope in the rail.
+   Kept inside the envelope's own box — the rail scales and overlaps these,
+   and anything hanging past the edge gets clipped by the scroller. */
+.env__sticker {
+  position: absolute;
+  z-index: 6;
+  right: 2%;
+  bottom: 2%;
+  width: 26%;
+  height: auto;
+  transform: rotate(-10deg);
+  pointer-events: none;
+  filter: drop-shadow(0 3px 5px rgba(41, 76, 104, 0.22));
+}
+
 /* the sprig tucked into the corner of one she's read */
 .env__marker {
   position: absolute;
